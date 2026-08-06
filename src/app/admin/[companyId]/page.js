@@ -21,34 +21,42 @@ export default function AdminPage({ params }) {
   }, []);
 
   useEffect(() => {
-    const eventSource = new EventSource(`/api/queue/${companyId}/live`);
-
-    eventSource.onmessage = (event) => {
+    // Polling setup instead of Server-Sent Events to prevent Vercel serverless timeouts
+    let isMounted = true;
+    
+    const fetchQueueData = async () => {
       try {
-        const data = JSON.parse(event.data);
-        setQueueData(data);
+        const response = await fetch(`/api/queue/${companyId}`);
+        if (!response.ok) return;
+        const data = await response.json();
         
-        // Only set settings form if we just loaded, otherwise it overrides user typing
-        setSettingsForm(prev => {
-          if (Object.keys(prev).length === 0) {
-            return data.settings || {};
-          }
-          return prev;
-        });
-        
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
+        if (isMounted) {
+          setQueueData(data);
+          
+          // Only set settings form if we just loaded, otherwise it overrides user typing
+          setSettingsForm(prev => {
+            if (Object.keys(prev).length === 0) {
+              return data.settings || {};
+            }
+            return prev;
+          });
+          
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching queue data:', error);
       }
     };
 
-    eventSource.onerror = (error) => {
-      // console.error('EventSource failed in admin:', error);
-      // Removed eventSource.close() to allow automatic reconnection
-    };
+    // Fetch immediately
+    fetchQueueData();
+
+    // Poll every 2 seconds
+    const intervalId = setInterval(fetchQueueData, 2000);
 
     return () => {
-      eventSource.close();
+      isMounted = false;
+      clearInterval(intervalId);
     };
   }, [companyId]);
 

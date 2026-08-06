@@ -23,33 +23,39 @@ export default function DisplayPage({ params }) {
   }, []);
 
   useEffect(() => {
-    // Live data setup (Server-Sent Events)
-    const eventSource = new EventSource(`/api/queue/${companyId}/live`);
-
-    eventSource.onmessage = (event) => {
+    // Polling setup instead of Server-Sent Events to prevent Vercel serverless timeouts
+    let isMounted = true;
+    
+    const fetchQueueData = async () => {
       try {
-        const data = JSON.parse(event.data);
-
-        setQueueData(prev => {
-          if (prev && data.lastCallTime !== prev.lastCallTime) {
-            playAlertSound();
-            setChanged(true);
-            setTimeout(() => setChanged(false), 1000);
-          }
-          return data;
-        });
-      } catch (err) {
-        console.error('Error parsing live queue data:', err);
+        const response = await fetch(`/api/queue/${companyId}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        if (isMounted) {
+          setQueueData(prev => {
+            if (prev && data.lastCallTime !== prev.lastCallTime) {
+              playAlertSound();
+              setChanged(true);
+              setTimeout(() => setChanged(false), 1000);
+            }
+            return data;
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching queue data:', error);
       }
     };
 
-    eventSource.onerror = (error) => {
-      // console.error('EventSource failed:', error);
-      // Removed eventSource.close() to allow automatic reconnection
-    };
+    // Fetch immediately
+    fetchQueueData();
+
+    // Poll every 2 seconds
+    const intervalId = setInterval(fetchQueueData, 2000);
 
     return () => {
-      eventSource.close();
+      isMounted = false;
+      clearInterval(intervalId);
     };
   }, [companyId]);
 
