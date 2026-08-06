@@ -23,15 +23,14 @@ export default function DisplayPage({ params }) {
   }, []);
 
   useEffect(() => {
-    // Polling setup instead of Server-Sent Events to prevent Vercel serverless timeouts
+    // True Server-Sent Events (SSE) for 0-latency updates
     let isMounted = true;
     
-    const fetchQueueData = async () => {
+    const eventSource = new EventSource(`/api/queue/${companyId}/live`);
+    
+    eventSource.onmessage = (event) => {
       try {
-        const response = await fetch(`/api/queue/${companyId}`);
-        if (!response.ok) return;
-        const data = await response.json();
-        
+        const data = JSON.parse(event.data);
         if (isMounted) {
           setQueueData(prev => {
             if (prev && data.lastCallTime !== prev.lastCallTime) {
@@ -42,20 +41,14 @@ export default function DisplayPage({ params }) {
             return data;
           });
         }
-      } catch (error) {
-        console.error('Error fetching queue data:', error);
+      } catch (err) {
+        console.error('Error parsing SSE data:', err);
       }
     };
 
-    // Fetch immediately
-    fetchQueueData();
-
-    // Poll every 2 seconds
-    const intervalId = setInterval(fetchQueueData, 2000);
-
     return () => {
       isMounted = false;
-      clearInterval(intervalId);
+      eventSource.close();
     };
   }, [companyId]);
 

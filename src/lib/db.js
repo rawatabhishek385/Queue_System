@@ -1,19 +1,26 @@
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import { EventEmitter } from 'events';
 
 const globalForPrisma = globalThis;
 
 if (!globalForPrisma.prisma) {
   if (!process.env.DATABASE_URL) {
-    console.error("CRITICAL ERROR: DATABASE_URL is missing in Vercel Environment Variables!");
+    console.error("CRITICAL ERROR: DATABASE_URL is missing in Environment Variables!");
   }
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const adapter = new PrismaPg(pool);
   globalForPrisma.prisma = new PrismaClient({ adapter });
 }
 
+if (!globalForPrisma.queueEmitter) {
+  globalForPrisma.queueEmitter = new EventEmitter();
+  globalForPrisma.queueEmitter.setMaxListeners(100); // Allow many TV displays
+}
+
 export const prisma = globalForPrisma.prisma;
+export const queueEmitter = globalForPrisma.queueEmitter;
 
 const defaultSettings = {
   companyName: 'My Company',

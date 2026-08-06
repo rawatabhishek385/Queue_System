@@ -1,4 +1,4 @@
-import { getQueueData, prisma } from '@/lib/db';
+import { getQueueData, prisma, queueEmitter } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -178,5 +178,9 @@ export async function POST(request, { params }) {
   }
   
   const savedData = await getQueueData(companyId);
+  
+  // Emit event in memory to all connected SSE clients instantly
+  queueEmitter.emit(`update-${companyId}`, savedData);
+  
   return Response.json(savedData);
 }
