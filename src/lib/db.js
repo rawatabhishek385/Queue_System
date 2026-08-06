@@ -1,11 +1,14 @@
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
+import { Pool } from 'pg';
 
 const globalForPrisma = globalThis;
 
 if (!globalForPrisma.prisma) {
-  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+  if (!process.env.DATABASE_URL) {
+    console.error("CRITICAL ERROR: DATABASE_URL is missing in Vercel Environment Variables!");
+  }
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const adapter = new PrismaPg(pool);
   globalForPrisma.prisma = new PrismaClient({ adapter });
 }
