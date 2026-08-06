@@ -1,0 +1,52 @@
+{
+  "undefined": {
+    "currentTicket": 0,
+    "history": [],
+    "settings": {
+      "companyName": "My Company",
+      "logoUrl": "",
+      "primaryColor": "#6cabea",
+      "backgroundColor": "#8eecc0",
+      "textColor": "#080808"
+    }
+  },
+  "demo-company": {
+    "currentTicket": 1,
+    "history": [],
+    "missed": [],
+    "waitingList": [],
+    "lastGeneratedTicket": 1,
+    "currentCustomer": {
+      "ticket": 1,
+      "name": "Abhishek Rawat",
+      "phone": "+919411792128",
+      "email": "RAWATABHISHEK385@GMAIL.COM",
+      "timestamp": 1785932965863
+    },
+    "lastCallTime": 1785933177067,
+    "settings": {
+      "companyName": "Abhishek",
+      "logoUrl": "ww.google.com",
+      "primaryColor": "#d0afaf",
+      "backgroundColor": "#43df7a",
+      "textColor": "#000000",
+      "scrollingText": "hi testing working or not ",
+      "counterNumber": "10",
+      "totalCounters": "10"
+    },
+    "currentCounter": "10",
+    "activeCounters": {
+      "10": {
+        "ticket": 1,
+        "customer": {
+          "ticket": 1,
+          "name": "Abhishek Rawat",
+          "phone": "+919411792128",
+          "email": "RAWATABHISHEK385@GMAIL.COM",
+          "timestamp": 1785932965863
+        },
+        "timestamp": 1785933177067
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Company {
+  id                  String   @id
+  currentTicket       Int      @default(0)
+  lastGeneratedTicket Int      @default(0)
+  lastCallTime        BigInt   @default(0)
+
+  settings            Settings?
+  tickets             Ticket[]
+}
+
+model Settings {
+  id              String  @id @default(uuid())
+  companyId       String  @unique
+  company         Company @relation(fields: [companyId], references: [id])
+  
+  companyName     String  @default("My Company")
+  logoUrl         String  @default("")
+  primaryColor    String  @default("#3b82f6")
+  backgroundColor String  @default("#f8fafc")
+  textColor       String  @default("#0f172a")
+  scrollingText   String  @default("")
+  totalCounters   Int     @default(5)
+}
+
+model Ticket {
+  id           String   @id @default(uuid())
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id])
+  
+  ticketNumber Int
+  status       String   @default("WAITING") // WAITING, CALLED, MISSED, COMPLETED
+  name         String?
+  phone        String?
+  email        String?
+  createdAt    BigInt
+  
+  counter      String?
+}
