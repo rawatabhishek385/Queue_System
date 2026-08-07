@@ -123,7 +123,7 @@ export default function DisplayPage({ params }) {
                   <div key={ac.counter} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0.4rem 1.5rem', background: index === 0 ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.04)', borderRadius: '1rem', border: index === 0 ? '2px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.08)', boxShadow: index === 0 ? '0 10px 25px rgba(0,0,0,0.2)' : 'none', transition: 'all 0.3s ease', flexShrink: 1, minHeight: 'min-content' }}>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                      <div style={{ fontSize: 'clamp(0.6rem, 1.2vh, 0.8rem)', color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 700, marginBottom: '0.2rem' }}>Queue No</div>
+                      {index === 0 && <div style={{ fontSize: 'clamp(0.6rem, 1.2vh, 0.8rem)', color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 700, marginBottom: '0.2rem' }}>Queue No</div>}
                       <div className={`${styles.ticketNumber} ${index === 0 && changed ? styles.changed : ''}`} style={{ fontSize: 'clamp(1.5rem, 4vh, 3.5rem)', textShadow: index === 0 ? '0 4px 15px rgba(0,0,0,0.3)' : 'none', lineHeight: 1 }}>
                         {ac.ticket}
                       </div>
@@ -132,7 +132,7 @@ export default function DisplayPage({ params }) {
                     <div style={{ height: '2rem', width: '2px', background: 'rgba(255,255,255,0.15)', margin: '0 1rem' }} />
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                      <div style={{ fontSize: 'clamp(0.6rem, 1.2vh, 0.8rem)', color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 700, marginBottom: '0.2rem' }}>Counter</div>
+                      {index === 0 && <div style={{ fontSize: 'clamp(0.6rem, 1.2vh, 0.8rem)', color: '#e2e8f0', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 700, marginBottom: '0.2rem' }}>Counter</div>}
                       <div style={{ fontSize: 'clamp(1.5rem, 4vh, 3.5rem)', fontWeight: '900', lineHeight: 1, color: textColor || '#fff', textShadow: index === 0 ? '0 4px 15px rgba(0,0,0,0.3)' : 'none' }}>
                         {ac.counter}
                       </div>
